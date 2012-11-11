@@ -1,6 +1,13 @@
-source :rubygems
+source "https://rubygems.org"
 
-gem "compass", "0.11.beta.2"
-gem 'rb-fsevent'
-gem 'guard-shell'
-gem 'guard-livereload'
+group :assets do
+  gem "compass"
+end
+
+group :development do
+  gem 'guard-compass'
+  gem 'guard-coffeescript'
+  gem 'rb-inotify', :require => false
+  gem 'rb-fsevent', :require => false
+  gem 'rb-fchange', :require => false
+end

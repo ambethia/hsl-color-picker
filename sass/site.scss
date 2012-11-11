@@ -1,0 +1,51 @@
+@import "compass";
+@import "compass/layout";
+
+#color {
+  width: 30px; height: 30px;
+  margin-bottom: 15px;
+}
+.slider {
+  position: relative;
+  width: 360px;
+  height: 30px;
+  background: #EEE;
+  margin: 0 0 10px;
+  @include border-radius(10px);
+  @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
+  position: relative;
+  cursor: pointer;
+  height: 15px;
+  &:after {
+    content: " ";
+    @include stretch(-3px, -4px, -3px, -4px);
+    background: rgba(#000, .3);
+    @include border-radius(15px);
+    @include box-shadow(rgba(#000, .3) 0 1px inset, rgba(#fff, .1) 0 1px);
+    z-index: -1;
+  }
+  .handle {
+    position: absolute;
+    cursor: pointer;
+    z-index: 2;
+    top: -3px;
+    content: " ";
+    width: 21px;
+    height: 21px;
+    z-index: 1;
+    //background-color: rgba(#ccc, 1);
+    background-color: rgba(#fff, .1);
+    //@include transition(background, .4s);
+    @include background-image(radial-gradient(top center, circle, rgba(#fff, .8), rgba(#fff, .2) 15px));
+    @include border-radius(11px);
+    @include box-shadow(rgba(#fff, 1) 0px 1px 1px inset, rgba(#000, 0.4) 0px -1px 1px inset, rgba(#000, 0.4) 0px 1px 4px 0px, rgba(#000, .6) 0 0 2px);
+  }
+  &:hover {
+    .handle {
+      background-color: rgba(#fff, .1);
+    }
+  }
+}
+
+#why { display: none; }
+  

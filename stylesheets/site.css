@@ -1,0 +1,79 @@
+/* line 4, ../sass/site.scss */
+#color {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 15px;
+}
+
+/* line 8, ../sass/site.scss */
+.slider {
+  position: relative;
+  width: 360px;
+  height: 30px;
+  background: #EEE;
+  margin: 0 0 10px;
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  border-radius: 10px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
+  box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
+  position: relative;
+  cursor: pointer;
+  height: 15px;
+}
+/* line 19, ../sass/site.scss */
+.slider:after {
+  content: " ";
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  left: -4px;
+  right: -4px;
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  -ms-border-radius: 15px;
+  -o-border-radius: 15px;
+  border-radius: 15px;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.3) 0 1px inset, rgba(255, 255, 255, 0.1) 0 1px;
+  -moz-box-shadow: rgba(0, 0, 0, 0.3) 0 1px inset, rgba(255, 255, 255, 0.1) 0 1px;
+  box-shadow: rgba(0, 0, 0, 0.3) 0 1px inset, rgba(255, 255, 255, 0.1) 0 1px;
+  z-index: -1;
+}
+/* line 27, ../sass/site.scss */
+.slider .handle {
+  position: absolute;
+  cursor: pointer;
+  z-index: 2;
+  top: -3px;
+  content: " ";
+  width: 21px;
+  height: 21px;
+  z-index: 1;
+  background-color: rgba(255, 255, 255, 0.1);
+  background-image: -webkit-gradient(radial, 50% 0%, 0, 50% 0%, 15, color-stop(0%, rgba(255, 255, 255, 0.8)), color-stop(100%, rgba(255, 255, 255, 0.2)));
+  background-image: -webkit-radial-gradient(top center, circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 15px);
+  background-image: -moz-radial-gradient(top center, circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 15px);
+  background-image: -o-radial-gradient(top center, circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 15px);
+  background-image: radial-gradient(top center, circle, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2) 15px);
+  -webkit-border-radius: 11px;
+  -moz-border-radius: 11px;
+  -ms-border-radius: 11px;
+  -o-border-radius: 11px;
+  border-radius: 11px;
+  -webkit-box-shadow: white 0px 1px 1px inset, rgba(0, 0, 0, 0.4) 0px -1px 1px inset, rgba(0, 0, 0, 0.4) 0px 1px 4px 0px, rgba(0, 0, 0, 0.6) 0 0 2px;
+  -moz-box-shadow: white 0px 1px 1px inset, rgba(0, 0, 0, 0.4) 0px -1px 1px inset, rgba(0, 0, 0, 0.4) 0px 1px 4px 0px, rgba(0, 0, 0, 0.6) 0 0 2px;
+  box-shadow: white 0px 1px 1px inset, rgba(0, 0, 0, 0.4) 0px -1px 1px inset, rgba(0, 0, 0, 0.4) 0px 1px 4px 0px, rgba(0, 0, 0, 0.6) 0 0 2px;
+}
+/* line 44, ../sass/site.scss */
+.slider:hover .handle {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* line 50, ../sass/site.scss */
+#why {
+  display: none;
+}

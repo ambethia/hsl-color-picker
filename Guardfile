@@ -1,7 +1,12 @@
-guard 'shell' do
-  watch(/^sass\/(.*)\.scss/){|m| `compass compile` }
+# A sample Guardfile
+# More info at https://github.com/guard/guard#readme
+
+guard 'coffeescript', :input => 'coffeescripts', :output => 'javascripts'
+
+guard :coffeescript do
+  watch(%r{^coffeescripts/(.+\.coffee)$})
 end
 
-guard 'livereload', :api_version => '1.5' do
-  watch(/.+\.(css|js|html|png|jpg|gif)$/)
+guard :compass do
+  watch(%r{^sass/(.*)\.s[ac]ss$})
 end
