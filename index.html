@@ -11,25 +11,26 @@
       <h1>HSL Color Picker</h1>
       <p>Created for your enjoyment, by <a href="http://brandonmathis.com/">Brandon Mathis</a></p>
     </header>
-    <div class="frame">
-      <div id='color'></div>
-      <div id='controls'>
-        <div id='hue-slider' class='slider'><div class='handle'></div></div>
-        <input id='hue'>
-        <div id='saturation-slider' class='slider'><div class='handle'></div></div>
-        <input id='saturation'>
-        <div id='luminosity-slider' class='slider'><div class='handle'></div></div>
-        <input id='luminosity'>
-        <div id='alpha-slider' class='slider'><div class='handle'></div></div>
-        <input id='alpha'>
+    <div id="hslpicker">
+      <div class="frame">
+        <div id='color'></div>
+        <div id='controls'>
+          <div id='hue-slider' class='slider'><div class='handle'></div></div>
+          <input id='h'>
+          <div id='saturation-slider' class='slider'><div class='handle'></div></div>
+          <input id='s'>
+          <div id='luminosity-slider' class='slider'><div class='handle'></div></div>
+          <input id='l'>
+          <div id='alpha-slider' class='slider'><div class='handle'></div></div>
+          <input id='a'>
+        </div>
+        <div id="shadow"></div>
       </div>
-      <div id="shadow"></div>
-    </div>
-    <div id="colors">
-      <input id="hex" spellcheck="false" type="text">
-      <input id="rgba" spellcheck="false" type="text">
-      <input id="hsla" spellcheck="false" type="text">
-    </div>
+      <div id="colors">
+        <input id="hex" spellcheck="false" type="text">
+        <input id="rgba" spellcheck="false" type="text">
+        <input id="hsla" spellcheck="false" type="text">
+      </div>
     <footer>
     <p>HSL Color Picker adores cutting-edge browsers. &copy; 2011 <a href="http://brandonmathis.com/">Brandon Mathis</a> <a href="#" onclick="$('why').toggleClass('hello'); return false;">Why?</a> <a href="http://github.com/imathis/hsl-color-picker/">Source</a> </p>
     </footer>

@@ -2,37 +2,96 @@ window.hsl = {}
 
 $(document).ready ->
   window.hsl.color = new window.hsl.Color()
+  window.hsl.values = new window.hsl.Values(model: window.hsl.color)
   window.hsl.picker = new window.hsl.Picker(model: window.hsl.color).render()
-  window.hsl.tile = new window.hsl.Tile(model: window.hsl.color).render()
-  window.hsl.values = new window.hsl.Values(model: window.hsl.color).render()
-
-window.hsl.Tile = $.View.extend
-
-  initialize: ->
-    @.setElement $('#color')
-    @model.on 'change', @render, this
-
-  render: ->
-    @$el.css 'background-color': @model.hsla()
 
 window.hsl.Values = $.View.extend
   initialize: ->
-    @model.on 'change', @render, this
+    @.setElement $('#hslpicker')
+    @model.on 'change:h', @setHue, this
+    @model.on 'change:s', @setSat, this
+    @model.on 'change:l', @setLum, this
+    @model.on 'change:a', @setAlpha, this
+    @model.on 'change:a', @changeRgb, this
+    @model.on 'change:hex', @changeHex, this
+    @model.on 'change:rgb', @changeRgb, this
 
-  render: ->
-    $('#hue').attr 'value', @model.get('h')
-    $('#saturation').attr 'value', "#{@model.get('s')}%"
-    $('#luminosity').attr 'value', "#{@model.get('l')}%"
-    $('#alpha').attr 'value', @model.get('a')
+  events:
+    'keydown #controls input': 'bumpHsl'
+    'keyup #controls input': 'editHsl'
+    'keyup #colors input': 'changeColor'
 
-    $('#hex').attr 'value', @model.hex()
-    $('#rgba').attr 'value', @model.rgba()
-    $('#hsla').attr 'value', @model.hsla()
+  changeColor: (e) ->
+    el = $(e.target)
+    switch el.attr('id')
+      when 'rgba' then @model.rgba(el.val()) unless @model.rgba() is el.val()
+      when 'hex' then @model.hex el.val() unless @model.hex() is el.val()
+      when 'hsla' then @model.hsla el.val() unless @model.hsla() is el.val()
+
+  bumpHsl: (e) ->
+    if e.keyCode is 38 or e.keyCode is 40
+      part = $(e.target).attr('id')
+      shift = if e.shiftKey then 10 else 1
+      shift = -(shift) if e.keyCode is 40
+      @bumpValue(part, shift) 
+      e.preventDefault()
+
+  bumpValue: (part, shift) ->
+    current = @model.get(part)
+    val = current + shift
+    switch part
+      when 'h' then @model.h val
+      when 's' then @model.s val
+      when 'l' then @model.l val
+      when 'a' then @model.a Math.round(current*100 + shift)/100
+
+  editHsl: (e)->
+    el = $(e.target)
+    id = el.attr 'id'
+    switch id
+      when 'h' then @model.h parseInt el.val()
+      when 's' then @model.s parseInt el.val()
+      when 'l' then @model.l parseInt el.val()
+      when 'a' then @model.a parseFloat el.val()
+
+  setTile: ->
+    $('#color').css 'background-color': @model.hsla()
+
+  changeHex: ->
+    @update $('#hex'), @model.get 'hex'
+
+  changeRgb: ->
+    @update $('#rgba'), @model.rgba()
+
+  changeHsl: ->
+    @update $('#hsla'), @model.hsla()
+
+  setHue: ->
+    @update $('#h'), @model.get('h')
+    @changeHsl()
+    @setTile()
+  setSat: ->
+    @update $('#s'), @model.get('s')
+    @changeHsl()
+    @setTile()
+  setLum: ->
+    @update $('#l'), @model.get('l')
+    @changeHsl()
+    @setTile()
+  setAlpha: ->
+    @update $('#a'), @model.get('a')
+    @changeHsl()
+    @setTile()
+
+  update: (el, val)->
+    el.val "#{val}" unless el.val() is "#{val}"
+
 
 window.hsl.Picker = $.View.extend
 
   initialize: ->
     @.setElement $('#controls')
+    @model.hsla [$._.random(0, 360), 100, 50, 1]
 
   render: ->
     @hueSlider = @$('#hue-slider').dragdealer
@@ -40,33 +99,27 @@ window.hsl.Picker = $.View.extend
       steps: 360
       speed: 100
       x: @model.get('h')/360
-      snap: true
-      animationCallback: (x,y)=> @model.set h: Math.round(x*360)
       
     @satSlider = @$('#saturation-slider').dragdealer
       slide: false
-      steps: 100
       speed: 100
-      xPrecision: 360
       x: @model.get('s')/100
-      snap: true
-      animationCallback: (x,y)=> @model.set s: Math.round(x*100)
+    
 
     @lumSlider = @$('#luminosity-slider').dragdealer
       slide: false
-      steps: 100
       speed: 100
       x: @model.get('l')/100
-      snap: true
-      animationCallback: (x,y)=> @model.set l: Math.round(x*100)
 
     @alphaSlider = @$('#alpha-slider').dragdealer
       slide: false
-      steps: 100
       speed: 100
       x: @model.get 'a'
-      snap: true
-      animationCallback: (x,y)=> @model.set a: Math.round(x*100)/100
+    
+    @hueSlider.animationCallback = (x,y)=> @model.h Math.round(x*360)
+    @satSlider.animationCallback = (x,y)=> @model.s Math.round(x*100)
+    @lumSlider.animationCallback = (x,y)=> @model.l Math.round(x*100)
+    @alphaSlider.animationCallback = (x,y)=> @model.a Math.round(x*100)/100
 
     @model.on 'change:h', @setHue, this
     @model.on 'change:s', @setSat, this
@@ -90,65 +143,125 @@ window.hsl.Picker = $.View.extend
 
 window.hsl.Color = $.Model.extend
 
-  defaults:
-    h: $._.random(0, 360)
-    s: 100
-    l: 50
-    a: 1
-    r: null
-    g: null
-    b: null
-    hex: null
+  defaults: {}
 
-  initialize: ->
-    @.on 'change', @setColors, this
+  updateRgb: (rgba) ->
+    rgba or= @hslToRgb @hsla(true)
+    @.set rgb: [rgba[0], rgba[1], rgba[2]]
+    rgba
 
-  setColors: ->
-    rgba = @hslToRgb @hsla(true)
-    @.set r: rgba[0], g: rgba[1], b: rgba[2]
-    @.set hex: @rgbToHex rgba
+  updateHsl: (hsla)->
+    @.set h: hsla[0], s: hsla[1], l: hsla[2]
 
-  hsla: (array = false) ->
-    if array
+  updateHex: (rgba) ->
+    @.set hex: @rgbToHex rgba or @rgba(true)
+
+  h: (h) ->
+    unless @.get('h') is h
+      h = @limit(h, 360)
+      @.set h: h
+      @updateHex @updateRgb()
+      h
+
+  s: (s) ->
+    unless @.get('s') is s
+      s = @limit(s, 100)
+      @.set s: s
+      @updateHex @updateRgb()
+      s
+
+  l: (l) ->
+    unless @.get('l') is l
+      l = @limit(l, 100)
+      @.set l: l
+      @updateHex @updateRgb()
+      l
+
+  a: (a) ->
+    unless @.get('a') is a
+      a = @limit(a, 1)
+      @.set a: a
+      a
+
+  # Set hsla or get its current value as an array or string
+  hsla: (hsla = false) ->
+    if $._.isArray(hsla) or typeof hsla is 'string'
+      hsla = @isHsl(hsla)
+      if hsla
+        @updateHex @updateRgb(@hslToRgb hsla)
+        @updateHsl hsla
+        @.set a: hsla[3] or 1
+        hsla
+      else
+        false
+    else if hsla
       [@.get('h'), @.get('s'), @.get('l'), @.get('a')]
     else
       "hsla(#{@.get('h')}, #{@.get('s')}%, #{@.get('l')}%, #{@.get('a')})"
 
-  rgba: (array = false)->
-    if array
-      [@.get('r'), @.get('g'), @.get('b'), @.get('a')]
+
+  rgba: (rgba = false) ->
+    if $._.isArray(rgba) or typeof rgba is 'string'
+      rgba = @isRgb(rgba)
+      if rgba
+        @.set rgb: [rgba[0], rgba[1], rgba[2]], a: rgba[3] or 1
+        @updateHex(rgba)
+        @updateHsl(@rgbToHsl rgba)
+      else
+        false
+    else if rgba
+      g = @.get('rgb').concat @.get('a')
+      g
     else
-      "rgba(#{@.get('r')}, #{@.get('g')}, #{@.get('b')}, #{@.get('a')})"
+      rgb = @.get('rgb')
+      "rgba(#{rgb[0]}, #{rgb[1]}, #{rgb[2]}, #{@.get('a')})"
 
-  hex: ->
-    @hslToHex @hsla(true)
+  hex: (hex) ->
+    if hex?
+      hex = @isHex(hex)
+      if hex
+        @.set hex: hex
+        rgba = @hexToRgb hex
+        @updateRgb rgba
+        @.set a: rgba[3] or 1
+        @updateHsl(@rgbToHsl rgba)
+      else
+        false
+    else
+      @.get 'hex'
 
-  isHex: (hex) -> 
+  limit: (val, finish=100) ->
+    if val < 0
+      0
+    else if val > finish
+      finish
+    else
+      val
+    
+  isHex: (hex, marker = true) -> 
     match = hex.match(/^(#)?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$/)?.slice(2)
     return false unless match?
 
     color = $._.compact(match).join('')
-    color = ("#{c}#{c}" for c in color).join('') if color.length isnt 6 # expand the short hex by doubling each character, fc0 -> ffcc00
-    '#'+color
+    if marker then '#'+color else color
 
   isRgb: (rgb) -> 
-    match = rgb.match(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,?\s*(0?\.?\d{1,2})?\s*\)$/)?.slice(1)
-    return false unless match?
-
-    color = (parseFloat c for c in $._.compact(match))
-    color.push 1 if color.length is 3
-    valid = color[0] <= 255 and color[1] <= 255 and color[2] <= 255 and color[3]? <= 1
-    if valid then color else false
+    if typeof rgb is 'string'
+      match = rgb.match(/rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,?\s*(0?\.?\d{1,2})?\s*\)$/)?.slice(1)
+      return false unless match?
+      rgb = (parseFloat c for c in $._.compact(match))
+    rgb[3] or= 1 # If there isn't an alpha value already
+    valid = rgb[0] <= 255 and rgb[1] <= 255 and rgb[2] <= 255 and rgb[3] <= 1
+    if valid then rgb else false
 
   isHsl: (hsl) -> 
-    match = hsl.match(/hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,?\s*(\.?\d{1,2})?\s*\)$/)?.slice(1)
-    if match?
-      color = $._.compact(match)
-      color.push 1 if color.length is 3
-      valid = parseInt(color[0]) <= 360 and parseInt(color[1]) <= 100 and parseInt(color[2]) <= 100 and parseFloat(color[3]) <= 1
-      if valid then color else false
-    else
-      false
+    if typeof hsl is 'string'
+      match = hsl.match(/hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,?\s*(\.?\d{1,2})?\s*\)$/)?.slice(1)
+      return false unless match?
+      hsl = (parseFloat c for c in $._.compact(match))
+    hsl[3] or= 1 # If there isn't an alpha value already
+    valid = hsl[0] <= 360 and hsl[1] <= 100 and hsl[2] <= 100 and hsl[3] <= 1
+    if valid then hsl else false
 
   valid: (color) -> 
     type = @type color
@@ -168,9 +281,10 @@ window.hsl.Color = $.Model.extend
         'rgb'
 
   hexToRgb: (hex) ->
-    hex = @isHex hex
+    hex = @isHex hex, false
     return false unless hex
 
+    hex = ("#{c}#{c}" for c in hex).join('') if hex.length isnt 6 # expand the short hex by doubling each character, fc0 -> ffcc00
     color = hex.match(/#?(.{2})(.{2})(.{2})/).slice(1)
     color = (parseInt(c, 16) for c in color).concat [1]
   
