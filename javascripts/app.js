@@ -3,18 +3,25 @@
   window.hsl = {};
 
   $(document).ready(function() {
-    window.hsl.color = new window.hsl.Color();
-    window.hsl.values = new window.hsl.Values({
-      model: window.hsl.color
+    var color, hexHash, inputs;
+    color = new window.hsl.Color();
+    hexHash = function() {
+      return color.isHex(window.location.hash);
+    };
+    inputs = new window.hsl.Inputs({
+      model: color,
+      el: '#hslpicker'
     });
-    return window.hsl.picker = new window.hsl.Picker({
-      model: window.hsl.color
+    return window.picker = new window.hsl.Picker({
+      model: color,
+      el: '#controls',
+      hex: hexHash()
     }).render();
   });
 
-  window.hsl.Values = $.View.extend({
-    initialize: function() {
-      this.setElement($('#hslpicker'));
+  window.hsl.Inputs = $.View.extend({
+    initialize: function(options) {
+      this.setElement($(options.el));
       this.model.on('change:h', this.setHue, this);
       this.model.on('change:s', this.setSat, this);
       this.model.on('change:l', this.setLum, this);
@@ -33,7 +40,7 @@
       el = $(e.target);
       switch (el.attr('id')) {
         case 'rgba':
-          if (this.model.rgba() !== el.val()) {
+          if (this.model.rgbaStr() !== el.val()) {
             return this.model.rgba(el.val());
           }
           break;
@@ -43,7 +50,7 @@
           }
           break;
         case 'hsla':
-          if (this.model.hsla() !== el.val()) {
+          if (this.model.hslaStr() !== el.val()) {
             return this.model.hsla(el.val());
           }
       }
@@ -92,17 +99,18 @@
     },
     setTile: function() {
       return $('#color').css({
-        'background-color': this.model.hsla()
+        'background-color': this.model.hslaStr()
       });
     },
     changeHex: function() {
-      return this.update($('#hex'), this.model.get('hex'));
+      this.update($('#hex'), this.model.get('hex'));
+      return this.update($('#url'), 'http://hslpicker.com' + this.model.get('hex'));
     },
     changeRgb: function() {
-      return this.update($('#rgba'), this.model.rgba());
+      return this.update($('#rgba'), this.model.rgbaStr());
     },
     changeHsl: function() {
-      return this.update($('#hsla'), this.model.hsla());
+      return this.update($('#hsla'), this.model.hslaStr());
     },
     setHue: function() {
       this.update($('#h'), this.model.get('h'));
@@ -132,73 +140,149 @@
   });
 
   window.hsl.Picker = $.View.extend({
-    initialize: function() {
-      this.setElement($('#controls'));
-      return this.model.hsla([$._.random(0, 360), 100, 50, 1]);
+    initialize: function(options) {
+      var _ref, _ref1, _ref2;
+      this.setElement($(options.el));
+      if (((_ref = options.hex) != null ? _ref.length : void 0) && this.model.isHex(options.hex)) {
+        return this.model.hex(options.hex);
+      } else if (((_ref1 = options.rgba) != null ? _ref1.length : void 0) && this.model.isRgb(options.rgba)) {
+        return this.model.rgb(options.rgba);
+      } else if (((_ref2 = options.hsla) != null ? _ref2.length : void 0) && this.model.isHsl(options.hsla)) {
+        return this.model.hsla(options.hsla);
+      } else {
+        return this.model.hsla([$._.random(0, 360), 100, 50, 1]);
+      }
     },
     render: function() {
       var _this = this;
-      this.hueSlider = this.$('#hue-slider').dragdealer({
+      this.hueSlider = this.$('#h-slider').dragdealer({
         slide: false,
         steps: 360,
         speed: 100,
-        x: this.model.get('h') / 360
+        x: this.model.get('h') / 360,
+        animationCallback: function(x, y) {
+          var hue;
+          hue = Math.round(x * 360);
+          if (_this.model.get('h') !== hue) {
+            return _this.model.h(hue);
+          }
+        }
       });
-      this.satSlider = this.$('#saturation-slider').dragdealer({
+      this.satSlider = this.$('#s-slider').dragdealer({
         slide: false,
         speed: 100,
-        x: this.model.get('s') / 100
+        x: this.model.get('s') / 100,
+        animationCallback: function(x, y) {
+          var sat;
+          sat = Math.round(x * 100);
+          if (_this.model.get('s') !== sat) {
+            return _this.model.s(sat);
+          }
+        }
       });
-      this.lumSlider = this.$('#luminosity-slider').dragdealer({
+      this.lumSlider = this.$('#l-slider').dragdealer({
         slide: false,
         speed: 100,
-        x: this.model.get('l') / 100
+        x: this.model.get('l') / 100,
+        animationCallback: function(x, y) {
+          var lum;
+          lum = Math.round(x * 100);
+          if (_this.model.get('l') !== lum) {
+            return _this.model.l(lum);
+          }
+        }
       });
-      this.alphaSlider = this.$('#alpha-slider').dragdealer({
+      this.alphaSlider = this.$('#a-slider').dragdealer({
         slide: false,
         speed: 100,
-        x: this.model.get('a')
+        x: this.model.get('a'),
+        animationCallback: function(x, y) {
+          var alpha;
+          alpha = Math.round(x * 100) / 100;
+          if (_this.model.get('a') !== alpha) {
+            return _this.model.a(alpha);
+          }
+        }
       });
-      this.hueSlider.animationCallback = function(x, y) {
-        return _this.model.h(Math.round(x * 360));
-      };
-      this.satSlider.animationCallback = function(x, y) {
-        return _this.model.s(Math.round(x * 100));
-      };
-      this.lumSlider.animationCallback = function(x, y) {
-        return _this.model.l(Math.round(x * 100));
-      };
-      this.alphaSlider.animationCallback = function(x, y) {
-        return _this.model.a(Math.round(x * 100) / 100);
-      };
       this.model.on('change:h', this.setHue, this);
       this.model.on('change:s', this.setSat, this);
       this.model.on('change:l', this.setLum, this);
-      return this.model.on('change:a', this.setAlpha, this);
+      this.model.on('change:a', this.setAlpha, this);
+      return this;
     },
     setHue: function() {
-      return this.setSlider(this.hueSlider, this.model.get('h'), 360);
+      this.setSlider(this.hueSlider, this.model.get('h'), 360);
+      return this.updateSliderStyles('h');
     },
     setSat: function() {
-      return this.setSlider(this.satSlider, this.model.get('s'), 100);
+      this.setSlider(this.satSlider, this.model.get('s'), 100);
+      return this.updateSliderStyles('s');
     },
     setLum: function() {
-      return this.setSlider(this.lumSlider, this.model.get('l'), 100);
+      this.setSlider(this.lumSlider, this.model.get('l'), 100);
+      return this.updateSliderStyles('l');
     },
     setAlpha: function() {
-      return this.setSlider(this.alphaSlider, this.model.get('a') * 100, 100);
+      this.setSlider(this.alphaSlider, this.model.get('a') * 100, 100);
+      return this.updateSliderStyles('a');
     },
     setSlider: function(slider, value, factor) {
       if (Math.round(slider.value.current[0] * factor) !== Math.round(value)) {
         return slider.setValue(value / factor);
       }
+    },
+    updateSliderStyles: function(part) {
+      var p, parts, _i, _len, _results;
+      parts = $._.without(['h', 's', 'l', 'a'], part);
+      _results = [];
+      for (_i = 0, _len = parts.length; _i < _len; _i++) {
+        p = parts[_i];
+        _results.push(this.setSliderBg(p));
+      }
+      return _results;
+    },
+    setSliderBg: function(part) {
+      return $("#" + part + "-slider").attr('style', "background: -webkit-" + (this.gradient(part)));
+    },
+    gradient: function(part) {
+      var colors, multiplier, num, size;
+      size = part === 'h' ? 36 : 2;
+      multiplier = part === 'h' ? 10 : 50;
+      colors = (function() {
+        var _i, _results;
+        _results = [];
+        for (num = _i = 0; 0 <= size ? _i <= size : _i >= size; num = 0 <= size ? ++_i : --_i) {
+          _results.push(this.model.hslaStr(this.tweakHsla(part, num * multiplier)));
+        }
+        return _results;
+      }).call(this);
+      return "linear-gradient(left, " + (colors.join(',')) + ");";
+    },
+    tweakHsla: function(part, value) {
+      var color, pos;
+      color = this.model.hsla();
+      switch (part) {
+        case 'h':
+          pos = 0;
+          break;
+        case 's':
+          pos = 1;
+          break;
+        case 'l':
+          pos = 2;
+          break;
+        case 'a':
+          pos = 3;
+      }
+      color.splice(pos, 1, value);
+      return color;
     }
   });
 
   window.hsl.Color = $.Model.extend({
     defaults: {},
     updateRgb: function(rgba) {
-      rgba || (rgba = this.hslToRgb(this.hsla(true)));
+      rgba || (rgba = this.hslToRgb(this.hsla()));
       this.set({
         rgb: [rgba[0], rgba[1], rgba[2]]
       });
@@ -213,7 +297,7 @@
     },
     updateHex: function(rgba) {
       return this.set({
-        hex: this.rgbToHex(rgba || this.rgba(true))
+        hex: this.rgbToHex(rgba || this.rgba())
       });
     },
     h: function(h) {
@@ -256,10 +340,7 @@
       }
     },
     hsla: function(hsla) {
-      if (hsla == null) {
-        hsla = false;
-      }
-      if ($._.isArray(hsla) || typeof hsla === 'string') {
+      if (hsla != null) {
         hsla = this.isHsl(hsla);
         if (hsla) {
           this.updateHex(this.updateRgb(this.hslToRgb(hsla)));
@@ -271,18 +352,16 @@
         } else {
           return false;
         }
-      } else if (hsla) {
-        return [this.get('h'), this.get('s'), this.get('l'), this.get('a')];
       } else {
-        return "hsla(" + (this.get('h')) + ", " + (this.get('s')) + "%, " + (this.get('l')) + "%, " + (this.get('a')) + ")";
+        return [this.get('h'), this.get('s'), this.get('l'), this.get('a')];
       }
     },
+    hslaStr: function(hsla) {
+      hsla || (hsla = this.hsla());
+      return "hsla(" + hsla[0] + ", " + hsla[1] + "%, " + hsla[2] + "%, " + hsla[3] + ")";
+    },
     rgba: function(rgba) {
-      var g, rgb;
-      if (rgba == null) {
-        rgba = false;
-      }
-      if ($._.isArray(rgba) || typeof rgba === 'string') {
+      if (rgba != null) {
         rgba = this.isRgb(rgba);
         if (rgba) {
           this.set({
@@ -294,13 +373,14 @@
         } else {
           return false;
         }
-      } else if (rgba) {
-        g = this.get('rgb').concat(this.get('a'));
-        return g;
       } else {
-        rgb = this.get('rgb');
-        return "rgba(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + ", " + (this.get('a')) + ")";
+        return this.get('rgb').concat(this.get('a'));
       }
+    },
+    rgbaStr: function() {
+      var rgb;
+      rgb = this.get('rgb');
+      return "rgba(" + rgb[0] + ", " + rgb[1] + ", " + rgb[2] + ", " + (this.get('a')) + ")";
     },
     hex: function(hex) {
       var rgba;
