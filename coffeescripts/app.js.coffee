@@ -23,8 +23,9 @@ window.hsl.Inputs = $.View.extend
 
   events:
     'keydown #controls input': 'bumpHsl'
-    'keyup #controls input': 'editHsl'
-    'keyup #colors input': 'changeColor'
+    'keyup #controls input'  : 'editHsl'
+    'keyup #colors input'    : 'changeColor'
+    'click #color'           : 'toggleTileBg'
 
   changeColor: (e) ->
     el = $(e.target)
@@ -64,6 +65,15 @@ window.hsl.Inputs = $.View.extend
 
   setTile: ->
     $('#color').css 'background-color': @model.hslaStr()
+
+  toggleTileBg: ->
+    el = $('.frame')
+    if el.hasClass 'alt-1'
+      el.removeClass('alt-1').addClass 'alt-2'
+    else if el.hasClass 'alt-2'
+      el.removeClass 'alt-2'
+    else
+      el.addClass 'alt-1'
 
   changeHex: ->
     @update $('#hex'), @model.get 'hex'

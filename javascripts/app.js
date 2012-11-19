@@ -33,7 +33,8 @@
     events: {
       'keydown #controls input': 'bumpHsl',
       'keyup #controls input': 'editHsl',
-      'keyup #colors input': 'changeColor'
+      'keyup #colors input': 'changeColor',
+      'click #color': 'toggleTileBg'
     },
     changeColor: function(e) {
       var el;
@@ -98,6 +99,17 @@
       return $('#color').css({
         'background-color': this.model.hslaStr()
       });
+    },
+    toggleTileBg: function() {
+      var el;
+      el = $('.frame');
+      if (el.hasClass('alt-1')) {
+        return el.removeClass('alt-1').addClass('alt-2');
+      } else if (el.hasClass('alt-2')) {
+        return el.removeClass('alt-2');
+      } else {
+        return el.addClass('alt-1');
+      }
     },
     changeHex: function() {
       this.update($('#hex'), this.model.get('hex'));

@@ -16,7 +16,7 @@
 %color-boxes {
   &:before, &:after {
     content: "";
-    z-index: -1;
+    z-index: -2;
   }
   &:after {
     background: rgba(#000, .3);
@@ -34,12 +34,18 @@
   width: 119px; height: 119px;
   margin: { bottom: 15px; top: 3px; right: 10px; }
   float: left;
+  cursor: pointer;
   @include border-radius(5px);
   @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
-  &:before, &:after {
-    @include border-radius(8px);
-  }
+  &:after { @include border-radius(8px); }
+  &:before { @include border-radius(5px); }
   @extend %color-boxes;
+}
+.frame {
+  &.alt-1 {
+    #color:before, .slider:before { background: #fff; z-index: -1 } }
+  &.alt-2 {
+    #color:before, .slider:before { background: #000; z-index: -1 } }
 }
 
 .slider {
