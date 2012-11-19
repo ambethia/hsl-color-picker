@@ -1,0 +1,120 @@
+#hslpicker {
+  margin: 0 auto;
+}
+
+%checked {
+  $tile1: rgba(#fff, .2);
+  $tile2: transparent;
+  @include background-image(
+    linear-gradient(45deg, $tile1 25%, $tile2 25%, $tile2 75%, $tile1 75%, $tile1),
+    linear-gradient(45deg, $tile1 25%, $tile2 25%, $tile2 75%, $tile1 75%, $tile1)
+  );
+  @include background-size(20px 20px);
+  background-position: 0px 0px, 10px 10px;
+}
+
+%color-boxes {
+  &:before, &:after {
+    content: "";
+    z-index: -1;
+  }
+  &:after {
+    background: rgba(#000, .3);
+    @include stretch(-3px, -4px, -3px, -4px);
+    @include box-shadow(rgba(#000, .3) 0 1px inset, rgba(#fff, .1) 0 1px);
+  }
+  &:before {
+    @include stretch;
+    @extend %checked;
+  }
+}
+
+#color {
+  position: relative;
+  width: 119px; height: 119px;
+  margin: { bottom: 15px; top: 3px; right: 10px; }
+  float: left;
+  @include border-radius(5px);
+  @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
+  &:before, &:after {
+    @include border-radius(8px);
+  }
+  @extend %color-boxes;
+}
+
+.slider {
+  position: relative;
+  width: 381px;
+  margin: 3px 5px 10px;
+  @include border-radius(10px);
+  position: relative;
+  @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
+  cursor: pointer;
+  height: 20px;
+  float: left;
+  clear: left;
+  @extend %color-boxes;
+  &:after, &:before {
+    @include border-radius(15px);
+  }
+  &:hover {
+    .handle {
+      background-color: rgba(#fff, .1);
+    }
+  }
+}
+
+.handle {
+  position: absolute;
+  cursor: pointer;
+  z-index: 2;
+  top: -1px;
+  content: " ";
+  width: 22px;
+  height: 22px;
+  z-index: 1;
+  background-color: rgba(#ddd, 1);
+  @include transition(background-color .4s);
+  @include background-image(radial-gradient(top center, circle, rgba(#fff, .9), rgba(#fff, .2) 15px));
+  @include border-radius(1em);
+  @include box-shadow(rgba(#fff, 1) 0px 1px 1px inset, rgba(#000, 0.4) 0px -1px 1px inset, rgba(#000, 0.4) 0px 1px 4px 0px, rgba(#000, .6) 0 0 2px);
+}
+
+#controls {
+  @include clearfix;
+  input {
+    width: 30px;
+    font-size: .8em;
+    padding: 3px 6px;
+    float: left;
+    margin-left: 8px;
+  }
+}
+
+#colors {
+  clear: left;
+  input { text-align: center; }
+}
+
+input {
+  @include transition(background-color .5s);
+  @include border-radius(4px);
+  @include box-shadow(rgba(#fff, .1) 0 1px 0, rgba(#000, .8) 0 1px 7px 0px inset);
+  border: 0;
+  padding: 8px 6px;
+  font-size: 1em;
+  background-color: rgba(#000, .3);
+  color: rgba(#fff, .8);
+  text-shadow: rgba(#000, .5) 0 2px 1px;
+  &:focus { outline: none; color: #fff; }
+}
+
+#hex  { width: 4.8em; }
+#rgba { width: 13.2em; }
+#hsla { width: 14em; }
+
+input.error {
+  @include box-shadow(rgba(mix(#fff, red), .1) 0 1px 0, rgba(#000, .8) 0 1px 7px 0px inset);
+  background-color: rgba(mix(#000, red, 60), .3);
+  color: mix(#fff, red, 6);
+}

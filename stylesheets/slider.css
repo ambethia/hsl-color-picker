@@ -337,7 +337,7 @@ pre code {
 }
 
 /* line 122, ../sass/slider.scss */
-.x-thumb, #hsl_picker .slider > div .thumb {
+.x-thumb, #hsl_picker .slider > div .handle {
   position: relative;
   z-index: 2;
   top: -3px;
@@ -558,7 +558,7 @@ heading a {
   width: 420px;
 }
 /* line 245, ../sass/slider.scss */
-#hsl_picker .slider > div:hover .thumb {
+#hsl_picker .slider > div:hover .handle {
   background-color: rgba(255, 255, 255, 0.1);
 }
 /* line 248, ../sass/slider.scss */

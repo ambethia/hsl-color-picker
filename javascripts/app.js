@@ -4,7 +4,7 @@
 
   $(document).ready(function() {
     var color, hexHash, inputs;
-    color = new window.hsl.Color();
+    window.color = color = new window.hsl.Color();
     hexHash = function() {
       return color.isHex(window.location.hash);
     };
@@ -38,21 +38,10 @@
     changeColor: function(e) {
       var el;
       el = $(e.target);
-      switch (el.attr('id')) {
-        case 'rgba':
-          if (this.model.rgbaStr() !== el.val()) {
-            return this.model.rgba(el.val());
-          }
-          break;
-        case 'hex':
-          if (this.model.hex() !== el.val()) {
-            return this.model.hex(el.val());
-          }
-          break;
-        case 'hsla':
-          if (this.model.hslaStr() !== el.val()) {
-            return this.model.hsla(el.val());
-          }
+      if (this.model[el.attr('id')](el.val())) {
+        return el.removeClass('error');
+      } else {
+        return el.addClass('error');
       }
     },
     bumpHsl: function(e) {
@@ -70,31 +59,39 @@
     bumpValue: function(part, shift) {
       var current, val;
       current = this.model.get(part);
-      val = current + shift;
+      val = part === 'a' ? Math.round(current * 100 + shift) / 100 : current + shift;
       switch (part) {
         case 'h':
-          return this.model.h(val);
+          val = this.gate(val, 360);
+          break;
         case 's':
-          return this.model.s(val);
         case 'l':
-          return this.model.l(val);
+          val = this.gate(val, 100);
+          break;
         case 'a':
-          return this.model.a(Math.round(current * 100 + shift) / 100);
+          val = this.gate(val, 1);
+      }
+      return this.model[part](val);
+    },
+    gate: function(val, finish) {
+      if (val < 0) {
+        return 0;
+      } else if (val > finish) {
+        return finish;
+      } else {
+        return val;
       }
     },
     editHsl: function(e) {
-      var el, id;
+      var el, part, val;
       el = $(e.target);
-      id = el.attr('id');
-      switch (id) {
-        case 'h':
-          return this.model.h(parseInt(el.val()));
-        case 's':
-          return this.model.s(parseInt(el.val()));
-        case 'l':
-          return this.model.l(parseInt(el.val()));
-        case 'a':
-          return this.model.a(parseFloat(el.val()));
+      part = el.attr('id');
+      val = parseFloat(el.val());
+      if (this.model.inRange(part, val)) {
+        el.removeClass('error');
+        return this.model[part](val);
+      } else {
+        return el.addClass('error');
       }
     },
     setTile: function() {
@@ -157,7 +154,7 @@
       var _this = this;
       this.hueSlider = this.$('#h-slider').dragdealer({
         slide: false,
-        steps: 360,
+        steps: 361,
         speed: 100,
         x: this.model.get('h') / 360,
         animationCallback: function(x, y) {
@@ -170,6 +167,7 @@
       });
       this.satSlider = this.$('#s-slider').dragdealer({
         slide: false,
+        steps: 101,
         speed: 100,
         x: this.model.get('s') / 100,
         animationCallback: function(x, y) {
@@ -182,6 +180,7 @@
       });
       this.lumSlider = this.$('#l-slider').dragdealer({
         slide: false,
+        steps: 101,
         speed: 100,
         x: this.model.get('l') / 100,
         animationCallback: function(x, y) {
@@ -194,6 +193,7 @@
       });
       this.alphaSlider = this.$('#a-slider').dragdealer({
         slide: false,
+        steps: 101,
         speed: 100,
         x: this.model.get('a'),
         animationCallback: function(x, y) {
@@ -204,6 +204,7 @@
           }
         }
       });
+      this.updateSliderStyles('all');
       this.model.on('change:h', this.setHue, this);
       this.model.on('change:s', this.setSat, this);
       this.model.on('change:l', this.setLum, this);
@@ -246,8 +247,20 @@
     },
     gradient: function(part) {
       var colors, multiplier, num, size;
-      size = part === 'h' ? 36 : 2;
-      multiplier = part === 'h' ? 10 : 50;
+      switch (part) {
+        case 'h':
+          size = 36;
+          multiplier = 10;
+          break;
+        case 's':
+        case 'l':
+          size = 5;
+          multiplier = 20;
+          break;
+        case 'a':
+          size = 5;
+          multiplier = .2;
+      }
       colors = (function() {
         var _i, _results;
         _results = [];
@@ -301,53 +314,68 @@
       });
     },
     h: function(h) {
-      if (this.get('h') !== h) {
-        h = this.limit(h, 360);
-        this.set({
-          h: h
-        });
-        this.updateHex(this.updateRgb());
+      if (this.inRange('h', h)) {
+        if (this.get('h') !== h) {
+          this.set({
+            h: h
+          });
+          this.updateHex(this.updateRgb());
+        }
         return h;
+      } else {
+        return false;
       }
     },
     s: function(s) {
-      if (this.get('s') !== s) {
-        s = this.limit(s, 100);
-        this.set({
-          s: s
-        });
-        this.updateHex(this.updateRgb());
+      if (this.inRange('s', s)) {
+        if (this.get('s') !== s) {
+          this.set({
+            s: s
+          });
+          this.updateHex(this.updateRgb());
+        }
         return s;
+      } else {
+        return false;
       }
     },
     l: function(l) {
-      if (this.get('l') !== l) {
-        l = this.limit(l, 100);
-        this.set({
-          l: l
-        });
-        this.updateHex(this.updateRgb());
+      if (this.inRange('l', l)) {
+        if (this.get('l') !== l) {
+          this.set({
+            l: l
+          });
+          this.updateHex(this.updateRgb());
+        }
         return l;
+      } else {
+        return false;
       }
     },
     a: function(a) {
-      if (this.get('a') !== a) {
-        a = this.limit(a, 1);
-        this.set({
-          a: a
-        });
+      if (this.inRange('a', a)) {
+        if (this.get('a') !== a) {
+          this.set({
+            a: a
+          });
+          this.updateHex(this.updateRgb());
+        }
         return a;
+      } else {
+        return false;
       }
     },
     hsla: function(hsla) {
       if (hsla != null) {
         hsla = this.isHsl(hsla);
         if (hsla) {
-          this.updateHex(this.updateRgb(this.hslToRgb(hsla)));
-          this.updateHsl(hsla);
-          this.set({
-            a: hsla[3] || 1
-          });
+          if ($._.difference(this.hsla(), hsla).length) {
+            this.updateHex(this.updateRgb(this.hslToRgb(hsla)));
+            this.updateHsl(hsla);
+            this.set({
+              a: hsla[3] || 1
+            });
+          }
           return hsla;
         } else {
           return false;
@@ -364,12 +392,15 @@
       if (rgba != null) {
         rgba = this.isRgb(rgba);
         if (rgba) {
-          this.set({
-            rgb: [rgba[0], rgba[1], rgba[2]],
-            a: rgba[3] || 1
-          });
-          this.updateHex(rgba);
-          return this.updateHsl(this.rgbToHsl(rgba));
+          if ($._.difference(rgba, this.rgba()).length) {
+            this.set({
+              rgb: [rgba[0], rgba[1], rgba[2]],
+              a: rgba[3] || 1
+            });
+            this.updateHex(rgba);
+            this.updateHsl(this.rgbToHsl(rgba));
+          }
+          return rgba;
         } else {
           return false;
         }
@@ -387,32 +418,23 @@
       if (hex != null) {
         hex = this.isHex(hex);
         if (hex) {
-          this.set({
-            hex: hex
-          });
-          rgba = this.hexToRgb(hex);
-          this.updateRgb(rgba);
-          this.set({
-            a: rgba[3] || 1
-          });
-          return this.updateHsl(this.rgbToHsl(rgba));
+          if (this.hex() !== hex) {
+            this.set({
+              hex: hex
+            });
+            rgba = this.hexToRgb(hex);
+            this.updateRgb(rgba);
+            this.set({
+              a: rgba[3] || 1
+            });
+            this.updateHsl(this.rgbToHsl(rgba));
+          }
+          return hex;
         } else {
           return false;
         }
       } else {
         return this.get('hex');
-      }
-    },
-    limit: function(val, finish) {
-      if (finish == null) {
-        finish = 100;
-      }
-      if (val < 0) {
-        return 0;
-      } else if (val > finish) {
-        return finish;
-      } else {
-        return val;
       }
     },
     isHex: function(hex, marker) {
@@ -460,7 +482,7 @@
     isHsl: function(hsl) {
       var c, match, valid, _ref;
       if (typeof hsl === 'string') {
-        match = (_ref = hsl.match(/hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,?\s*(\.?\d{1,2})?\s*\)$/)) != null ? _ref.slice(1) : void 0;
+        match = (_ref = hsl.match(/hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,?\s*(0?\.?\d{1,2})?\s*\)$/)) != null ? _ref.slice(1) : void 0;
         if (match == null) {
           return false;
         }
@@ -495,6 +517,21 @@
       } else {
         return false;
       }
+    },
+    inRange: function(part, val) {
+      var valid;
+      switch (part) {
+        case 'h':
+          valid = val >= 0 && val <= 360;
+          break;
+        case 's':
+        case 'l':
+          valid = val >= 0 && val <= 100;
+          break;
+        case 'a':
+          valid = val >= 0 && val <= 1;
+      }
+      return valid;
     },
     type: function(color) {
       var str, type;

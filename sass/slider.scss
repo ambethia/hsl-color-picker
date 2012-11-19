@@ -241,8 +241,8 @@ heading {
     width: 420px;
     & > div {
       @extend .x-input-slider;
-      .thumb { @extend .x-thumb; }
-      &:hover .thumb {
+      .handle { @extend .x-thumb; }
+      &:hover .handle {
         background-color: rgba(#fff, .1);
       }
       & + input {

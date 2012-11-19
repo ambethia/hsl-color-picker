@@ -1,51 +1,109 @@
 @import "compass";
 @import "compass/layout";
+@import "picker";
 
-#color {
-  width: 30px; height: 30px;
-  margin-bottom: 15px;
+@include font-face("AdelleBasic", font-files("adellebasic_bold-webfont.ttf", "adellebasic_bold-webfont.svg", "adellebasic_bold-webfont.woff", "adellebasic_bold-webfont.eot"));
+@include font-face("CaviarDreams", font-files("caviardreams-webfont.ttf", "caviardreams-webfont.svg", "caviardreams-webfont.woff", "caviardreams-webfont.eot"));
+
+html { 
+  text-align: center;
+  @include background-size(80px 80px);
+  @include background-image(linear-gradient(left top, rgba(#000, .1) 25%, rgba(#000, 0) 25%, rgba(#000, 0) 50%, rgba(#000, .1) 50%, rgba(#000, .1) 75%, rgba(#000, 0) 75%, rgba(#000, 0)));
+  background-color: #555;
 }
-.slider {
-  position: relative;
-  width: 381px;
-  height: 30px;
-  background: #EEE;
-  margin: 0 0 10px;
-  @include border-radius(10px);
-  @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
-  position: relative;
-  cursor: pointer;
-  height: 15px;
+body {
+  background: none;
+  padding: 0px 0px 40px;
+  display: inline-block;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   &:after {
     content: " ";
-    @include stretch(-3px, -4px, -3px, -4px);
-    background: rgba(#000, .3);
-    @include border-radius(15px);
-    @include box-shadow(rgba(#000, .3) 0 1px inset, rgba(#fff, .1) 0 1px);
+    @include stretch;
+    position: fixed;
+    background: rgba(#000, .5);
     z-index: -1;
   }
-  .handle {
-    position: absolute;
-    cursor: pointer;
-    z-index: 2;
-    top: -3px;
-    content: " ";
-    width: 21px;
-    height: 21px;
-    z-index: 1;
-    //background-color: rgba(#ccc, 1);
-    background-color: rgba(#fff, .1);
-    //@include transition(background, .4s);
-    @include background-image(radial-gradient(top center, circle, rgba(#fff, .8), rgba(#fff, .2) 15px));
-    @include border-radius(11px);
-    @include box-shadow(rgba(#fff, 1) 0px 1px 1px inset, rgba(#000, 0.4) 0px -1px 1px inset, rgba(#000, 0.4) 0px 1px 4px 0px, rgba(#000, .6) 0 0 2px);
+  > div, > section, > heading {
+    width: 580px;
+    margin: 0 auto;
+    @include box-sizing(border-box);
   }
-  &:hover {
-    .handle {
-      background-color: rgba(#fff, .1);
+}
+
+.heading-font {
+  font-family: 'AdelleBasic', sans;
+  font-weight: normal;
+}
+
+h1, h2, h3 {
+  @extend .heading-font;
+  color: #eee;
+  font-weight: normal;
+}
+
+a {
+  @include transition(color, .5s);
+  color: #eee;
+  text-decoration: none;
+  border-bottom: 1px dotted;
+}
+
+#why {
+  color: #c6c6c6;
+  font-size: .9em;
+  line-height: 1.45em;
+  margin-top: 1em;
+  padding-top: 1em;
+  text-align: left;
+  overflow: hidden;
+
+  pre,h2,h3,p { display: none; }
+  p { font-family: "Lucida sans", Helvetica, Arial, sans; }
+  strong { color: #ccc; }
+  a.why {
+    color: #444;
+    text-shadow: #000 0 0 2px;
+    text-transform: lowercase;
+    display: block;
+    width: 3.5em;
+    margin: 0 auto;
+    text-align: center;
+    display: none;
+  }
+
+  &.hello {
+    margin-top: 2em;
+    @include border-radius(4px);
+    @extend .inset-box-shadow;
+    padding: 2em 2.5em .5em;
+    background: rgba(#000, .2);
+
+    h2,h3 { text-shadow: rgba(#000, .7) 0 2px 2px; }
+    pre,h2,h3,p { display: block; }
+  }
+}
+  
+#footer {
+  color: #555;
+  text-shadow: rgba(#000, .5) 0 1px 1px;
+  margin-top: 1.3em;
+  font-size: .85em;
+  a {
+    display: inline-block;
+    color: #666;
+    line-height: 1.1em;
+    border-color: #555;
+    & + a {
+      margin-left: 1em;
+      position: relative;
+      &:before {
+        content: " ";
+        display: block;
+        position: absolute; left: -.7em; top: 0;
+        border-left: 1px solid rgba(#000, .7);
+        @include box-shadow(rgba(#fff, .08) 1px 0 inset);
+        width: 1px; height: 1.3em;
+      }
     }
   }
 }
-
-#why { display: none; }
-  

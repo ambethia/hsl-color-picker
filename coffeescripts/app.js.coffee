@@ -3,7 +3,7 @@ window.hsl = {}
 $(document).ready ->
 
 
-  color  = new window.hsl.Color()
+  window.color = color  = new window.hsl.Color()
   hexHash = ->
     color.isHex(window.location.hash)
   inputs = new window.hsl.Inputs(model: color, el: '#hslpicker')
@@ -28,36 +28,39 @@ window.hsl.Inputs = $.View.extend
 
   changeColor: (e) ->
     el = $(e.target)
-    switch el.attr('id')
-      when 'rgba' then @model.rgba(el.val()) unless @model.rgbaStr() is el.val()
-      when 'hex' then @model.hex el.val() unless @model.hex() is el.val()
-      when 'hsla' then @model.hsla el.val() unless @model.hslaStr() is el.val()
+    if @model[el.attr('id')](el.val()) then el.removeClass 'error' else el.addClass 'error'
 
   bumpHsl: (e) ->
     if e.keyCode is 38 or e.keyCode is 40
-      part = $(e.target).attr('id')
+      part  = $(e.target).attr('id')
       shift = if e.shiftKey then 10 else 1
       shift = -(shift) if e.keyCode is 40
-      @bumpValue(part, shift) 
+      @bumpValue part, shift 
       e.preventDefault()
 
   bumpValue: (part, shift) ->
-    current = @model.get(part)
-    val = current + shift
+    current = @model.get part
+    val = if part is 'a' then Math.round(current*100 + shift)/100 else current + shift
     switch part
-      when 'h' then @model.h val
-      when 's' then @model.s val
-      when 'l' then @model.l val
-      when 'a' then @model.a Math.round(current*100 + shift)/100
+      when 'h'     then val = @gate val, 360
+      when 's','l' then val = @gate val, 100
+      when 'a'     then val = @gate val, 1
+    @model[part] val
+
+  gate: (val, finish) ->
+    if val < 0 then 0
+    else if val > finish then finish
+    else val
 
   editHsl: (e)->
-    el = $(e.target)
-    id = el.attr 'id'
-    switch id
-      when 'h' then @model.h parseInt el.val()
-      when 's' then @model.s parseInt el.val()
-      when 'l' then @model.l parseInt el.val()
-      when 'a' then @model.a parseFloat el.val()
+    el   = $(e.target)
+    part = el.attr 'id'
+    val  = parseFloat el.val()
+    if @model.inRange part, val
+      el.removeClass 'error'
+      @model[part] val
+    else
+      el.addClass 'error'
 
   setTile: ->
     $('#color').css 'background-color': @model.hslaStr()
@@ -111,7 +114,7 @@ window.hsl.Picker = $.View.extend
   render: ->
     @hueSlider = @$('#h-slider').dragdealer
       slide: false
-      steps: 360
+      steps: 361
       speed: 100
       x: @model.get('h')/360
       animationCallback: (x,y)=> 
@@ -120,6 +123,7 @@ window.hsl.Picker = $.View.extend
       
     @satSlider = @$('#s-slider').dragdealer
       slide: false
+      steps: 101
       speed: 100
       x: @model.get('s')/100
       animationCallback: (x,y)=>
@@ -129,6 +133,7 @@ window.hsl.Picker = $.View.extend
     
     @lumSlider = @$('#l-slider').dragdealer
       slide: false
+      steps: 101
       speed: 100
       x: @model.get('l')/100
       animationCallback: (x,y)=>
@@ -137,11 +142,14 @@ window.hsl.Picker = $.View.extend
 
     @alphaSlider = @$('#a-slider').dragdealer
       slide: false
+      steps: 101
       speed: 100
       x: @model.get 'a'
       animationCallback: (x,y)=>
         alpha = Math.round(x*100)/100
         @model.a alpha unless @model.get('a') is alpha
+
+    @updateSliderStyles('all')
 
     @model.on 'change:h', @setHue, this
     @model.on 'change:s', @setSat, this
@@ -176,8 +184,17 @@ window.hsl.Picker = $.View.extend
     $("##{part}-slider").attr('style',"background: -webkit-#{@gradient part}")
 
   gradient: (part)->
-    size       = if part is 'h' then 36 else 2
-    multiplier = if part is 'h' then 10 else 50
+    switch part
+      when 'h'
+        size       = 36
+        multiplier = 10
+      when 's','l'
+        size       = 5
+        multiplier = 20
+      when 'a'
+        size       = 5
+        multiplier = .2
+
     colors = (@model.hslaStr(@tweakHsla(part, num*multiplier)) for num in [0..size])
     "linear-gradient(left, #{colors.join(',')});"
 
@@ -207,40 +224,46 @@ window.hsl.Color = $.Model.extend
     @.set hex: @rgbToHex rgba or @rgba()
 
   h: (h) ->
-    unless @.get('h') is h
-      h = @limit(h, 360)
-      @.set h: h
-      @updateHex @updateRgb()
+    if @inRange 'h', h
+      unless @.get('h') is h
+        @.set h: h
+        @updateHex @updateRgb()
       h
+    else false
 
   s: (s) ->
-    unless @.get('s') is s
-      s = @limit(s, 100)
-      @.set s: s
-      @updateHex @updateRgb()
+    if @inRange 's', s
+      unless @.get('s') is s
+        @.set s: s
+        @updateHex @updateRgb()
       s
+    else false
 
   l: (l) ->
-    unless @.get('l') is l
-      l = @limit(l, 100)
-      @.set l: l
-      @updateHex @updateRgb()
+    if @inRange 'l', l
+      unless @.get('l') is l
+        @.set l: l
+        @updateHex @updateRgb()
       l
+    else false
 
   a: (a) ->
-    unless @.get('a') is a
-      a = @limit(a, 1)
-      @.set a: a
+    if @inRange 'a', a
+      unless @.get('a') is a
+        @.set a: a
+        @updateHex @updateRgb()
       a
+    else false
 
   # Set hsla or get its current value as an array or string
   hsla: (hsla) ->
     if hsla?
       hsla = @isHsl(hsla)
       if hsla
-        @updateHex @updateRgb(@hslToRgb hsla)
-        @updateHsl hsla
-        @.set a: hsla[3] or 1
+        if $._.difference(@hsla(), hsla).length
+          @updateHex @updateRgb(@hslToRgb hsla)
+          @updateHsl hsla
+          @.set a: hsla[3] or 1
         hsla
       else
         false
@@ -255,9 +278,11 @@ window.hsl.Color = $.Model.extend
     if rgba?
       rgba = @isRgb(rgba)
       if rgba
-        @.set rgb: [rgba[0], rgba[1], rgba[2]], a: rgba[3] or 1
-        @updateHex(rgba)
-        @updateHsl(@rgbToHsl rgba)
+        if $._.difference(rgba, @rgba()).length
+          @.set rgb: [rgba[0], rgba[1], rgba[2]], a: rgba[3] or 1
+          @updateHex(rgba)
+          @updateHsl(@rgbToHsl rgba)
+        rgba
       else
         false
     else
@@ -270,25 +295,19 @@ window.hsl.Color = $.Model.extend
   hex: (hex) ->
     if hex?
       hex = @isHex(hex)
-      if hex
-        @.set hex: hex
-        rgba = @hexToRgb hex
-        @updateRgb rgba
-        @.set a: rgba[3] or 1
-        @updateHsl(@rgbToHsl rgba)
+      if hex 
+        if @hex() isnt hex
+          @.set hex: hex
+          rgba = @hexToRgb hex
+          @updateRgb rgba
+          @.set a: rgba[3] or 1
+          @updateHsl(@rgbToHsl rgba)
+        hex
       else
         false
     else
       @.get 'hex'
 
-  limit: (val, finish=100) ->
-    if val < 0
-      0
-    else if val > finish
-      finish
-    else
-      val
-    
   isHex: (hex, marker = true) -> 
     match = hex.match(/^(#)?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$/)?.slice(2)
     return false unless match?
@@ -307,7 +326,7 @@ window.hsl.Color = $.Model.extend
 
   isHsl: (hsl) -> 
     if typeof hsl is 'string'
-      match = hsl.match(/hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,?\s*(\.?\d{1,2})?\s*\)$/)?.slice(1)
+      match = hsl.match(/hsla?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\%\s*,\s*(\d{1,3})\%\s*,?\s*(0?\.?\d{1,2})?\s*\)$/)?.slice(1)
       return false unless match?
       hsl = (parseFloat c for c in $._.compact(match))
     hsl[3] or= 1 # If there isn't an alpha value already
@@ -320,6 +339,13 @@ window.hsl.Color = $.Model.extend
     else if type is 'rgb' then @isRgb(color)
     else if type is 'hsl' then @isHsl(color)
     else false
+
+  inRange: (part, val) ->
+    switch part
+      when 'h'     then valid = val >= 0 and val <= 360
+      when 's','l' then valid = val >= 0 and val <= 100
+      when 'a'     then valid = val >= 0 and val <= 1
+    valid
 
   type: (color) ->
     str = color.toString()
