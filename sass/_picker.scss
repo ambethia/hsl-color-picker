@@ -29,32 +29,46 @@
   }
 }
 
-#color {
+#tile {
   position: relative;
   width: 119px; height: 119px;
-  margin: { bottom: 15px; top: 3px; right: 10px; }
+  margin: { bottom: 15px; right: 10px; top: 3px; }
   float: left;
   cursor: pointer;
-  @include border-radius(5px);
+  background-color: rgba(#fff, 0);
+  @include transition(background-color .1s);
+  @include border-radius(6px);
   @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
   &:after { @include border-radius(8px); }
   &:before { @include border-radius(5px); }
   @extend %color-boxes;
 }
+
+#color {
+  width: 119px; height: 119px;
+  @include border-radius(5px);
+  @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
+}
+
 .frame {
   &.alt-1 {
-    #color:before, .slider:before { background: #fff; z-index: -1 } }
+    #tile, .slider { background: #fff; } }
   &.alt-2 {
-    #color:before, .slider:before { background: #000; z-index: -1 } }
+    #tile, .slider { background: #000; } }
 }
 
 .slider {
+  &, > div {
+    width: 381px; height: 20px; 
+    @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px, rgba(#000, 1) 0 0 2px 1px);
+  }
+  > div { @include border-radius(10px); }
+  @include border-radius(10px); 
+  @include transition(background-color .1s);
   position: relative;
   width: 381px;
   margin: 3px 5px 10px;
-  @include border-radius(10px);
   position: relative;
-  @include box-shadow(rgba(#fff, .1) 0 1px 2px 1px inset, rgba(#fff, .2) 0 1px inset, rgba(#000, .4) 0 -1px 1px inset, rgba(#000, .4) 0 1px 1px);
   cursor: pointer;
   height: 20px;
   float: left;
@@ -63,10 +77,8 @@
   &:after, &:before {
     @include border-radius(15px);
   }
-  &:hover {
-    .handle {
-      background-color: rgba(#fff, .1);
-    }
+  &:hover .handle {
+    background-color: rgba(#fff, .1);
   }
 }
 
@@ -89,7 +101,8 @@
 #controls {
   @include clearfix;
   input {
-    width: 30px;
+    width: 40px;
+    text-align: right;
     font-size: .8em;
     padding: 3px 6px;
     float: left;
@@ -99,11 +112,14 @@
 
 #colors {
   clear: left;
-  input { text-align: center; }
+  input {
+    text-align: center; margin-left: 2px;
+    &:first-child { margin-left: 0; }
+  }
 }
 
 input {
-  @include transition(background-color .5s);
+  @include transition(all .3s);
   @include border-radius(4px);
   @include box-shadow(rgba(#fff, .1) 0 1px 0, rgba(#000, .8) 0 1px 7px 0px inset);
   border: 0;
@@ -115,9 +131,9 @@ input {
   &:focus { outline: none; color: #fff; }
 }
 
-#hex  { width: 4.8em; }
-#rgba { width: 13.2em; }
-#hsla { width: 14em; }
+#hex  { width: 5.7em; }
+#rgba { width: 14em; }
+#hsla { width: 15em; }
 
 input.error {
   @include box-shadow(rgba(mix(#fff, red), .1) 0 1px 0, rgba(#000, .8) 0 1px 7px 0px inset);

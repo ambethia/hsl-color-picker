@@ -4,7 +4,7 @@
 }
 
 /* line 5, ../sass/_picker.scss */
-#color:before, .slider:before {
+#tile:before, .slider:before {
   background-image: -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2)), -webkit-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2));
   background-image: -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2)), -moz-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2));
   background-image: -o-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2)), -o-linear-gradient(45deg, rgba(255, 255, 255, 0.2) 25%, transparent 25%, transparent 75%, rgba(255, 255, 255, 0.2) 75%, rgba(255, 255, 255, 0.2));
@@ -17,12 +17,12 @@
 }
 
 /* line 17, ../sass/_picker.scss */
-#color:before, .slider:before, #color:after, .slider:after {
+#tile:before, .slider:before, #tile:after, .slider:after {
   content: "";
   z-index: -2;
 }
 /* line 21, ../sass/_picker.scss */
-#color:after, .slider:after {
+#tile:after, .slider:after {
   background: rgba(0, 0, 0, 0.3);
   position: absolute;
   top: -3px;
@@ -34,7 +34,7 @@
   box-shadow: rgba(0, 0, 0, 0.3) 0 1px inset, rgba(255, 255, 255, 0.1) 0 1px;
 }
 /* line 26, ../sass/_picker.scss */
-#color:before, .slider:before {
+#tile:before, .slider:before {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -43,34 +43,39 @@
 }
 
 /* line 32, ../sass/_picker.scss */
-#color {
+#tile {
   position: relative;
   width: 119px;
   height: 119px;
   margin-bottom: 15px;
-  margin-top: 3px;
   margin-right: 10px;
+  margin-top: 3px;
   float: left;
   cursor: pointer;
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  -ms-border-radius: 5px;
-  -o-border-radius: 5px;
-  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0);
+  -webkit-transition: background-color 0.1s;
+  -moz-transition: background-color 0.1s;
+  -o-transition: background-color 0.1s;
+  transition: background-color 0.1s;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+  border-radius: 6px;
   -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
   -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
   box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
 }
-/* line 40, ../sass/_picker.scss */
-#color:after {
+/* line 42, ../sass/_picker.scss */
+#tile:after {
   -webkit-border-radius: 8px;
   -moz-border-radius: 8px;
   -ms-border-radius: 8px;
   -o-border-radius: 8px;
   border-radius: 8px;
 }
-/* line 41, ../sass/_picker.scss */
-#color:before {
+/* line 43, ../sass/_picker.scss */
+#tile:before {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   -ms-border-radius: 5px;
@@ -78,37 +83,66 @@
   border-radius: 5px;
 }
 
-/* line 46, ../sass/_picker.scss */
-.frame.alt-1 #color:before, .frame.alt-1 .slider:before {
-  background: #fff;
-  z-index: -1;
-}
-/* line 48, ../sass/_picker.scss */
-.frame.alt-2 #color:before, .frame.alt-2 .slider:before {
-  background: #000;
-  z-index: -1;
+/* line 47, ../sass/_picker.scss */
+#color {
+  width: 119px;
+  height: 119px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  -ms-border-radius: 5px;
+  -o-border-radius: 5px;
+  border-radius: 5px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
+  box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
 }
 
-/* line 51, ../sass/_picker.scss */
+/* line 55, ../sass/_picker.scss */
+.frame.alt-1 #tile, .frame.alt-1 .slider {
+  background: #fff;
+}
+/* line 57, ../sass/_picker.scss */
+.frame.alt-2 #tile, .frame.alt-2 .slider {
+  background: #000;
+}
+
+/* line 60, ../sass/_picker.scss */
 .slider {
-  position: relative;
-  width: 381px;
-  margin: 3px 5px 10px;
   -webkit-border-radius: 10px;
   -moz-border-radius: 10px;
   -ms-border-radius: 10px;
   -o-border-radius: 10px;
   border-radius: 10px;
+  -webkit-transition: background-color 0.1s;
+  -moz-transition: background-color 0.1s;
+  -o-transition: background-color 0.1s;
+  transition: background-color 0.1s;
   position: relative;
-  -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
-  -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
-  box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px;
+  width: 381px;
+  margin: 3px 5px 10px;
+  position: relative;
   cursor: pointer;
   height: 20px;
   float: left;
   clear: left;
 }
-/* line 63, ../sass/_picker.scss */
+/* line 61, ../sass/_picker.scss */
+.slider, .slider > div {
+  width: 381px;
+  height: 20px;
+  -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px, black 0 0 2px 1px;
+  -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px, black 0 0 2px 1px;
+  box-shadow: rgba(255, 255, 255, 0.1) 0 1px 2px 1px inset, rgba(255, 255, 255, 0.2) 0 1px inset, rgba(0, 0, 0, 0.4) 0 -1px 1px inset, rgba(0, 0, 0, 0.4) 0 1px 1px, black 0 0 2px 1px;
+}
+/* line 65, ../sass/_picker.scss */
+.slider > div {
+  -webkit-border-radius: 10px;
+  -moz-border-radius: 10px;
+  -ms-border-radius: 10px;
+  -o-border-radius: 10px;
+  border-radius: 10px;
+}
+/* line 77, ../sass/_picker.scss */
 .slider:after, .slider:before {
   -webkit-border-radius: 15px;
   -moz-border-radius: 15px;
@@ -116,12 +150,12 @@
   -o-border-radius: 15px;
   border-radius: 15px;
 }
-/* line 67, ../sass/_picker.scss */
+/* line 80, ../sass/_picker.scss */
 .slider:hover .handle {
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* line 73, ../sass/_picker.scss */
+/* line 85, ../sass/_picker.scss */
 .handle {
   position: absolute;
   cursor: pointer;
@@ -151,35 +185,41 @@
   box-shadow: white 0px 1px 1px inset, rgba(0, 0, 0, 0.4) 0px -1px 1px inset, rgba(0, 0, 0, 0.4) 0px 1px 4px 0px, rgba(0, 0, 0, 0.6) 0 0 2px;
 }
 
-/* line 89, ../sass/_picker.scss */
+/* line 101, ../sass/_picker.scss */
 #controls {
   overflow: hidden;
   *zoom: 1;
 }
-/* line 91, ../sass/_picker.scss */
+/* line 103, ../sass/_picker.scss */
 #controls input {
-  width: 30px;
+  width: 40px;
+  text-align: right;
   font-size: .8em;
   padding: 3px 6px;
   float: left;
   margin-left: 8px;
 }
 
-/* line 100, ../sass/_picker.scss */
+/* line 113, ../sass/_picker.scss */
 #colors {
   clear: left;
 }
-/* line 102, ../sass/_picker.scss */
+/* line 115, ../sass/_picker.scss */
 #colors input {
   text-align: center;
+  margin-left: 2px;
+}
+/* line 117, ../sass/_picker.scss */
+#colors input:first-child {
+  margin-left: 0;
 }
 
-/* line 105, ../sass/_picker.scss */
+/* line 121, ../sass/_picker.scss */
 input {
-  -webkit-transition: background-color 0.5s;
-  -moz-transition: background-color 0.5s;
-  -o-transition: background-color 0.5s;
-  transition: background-color 0.5s;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  -o-transition: all 0.3s;
+  transition: all 0.3s;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
   -ms-border-radius: 4px;
@@ -195,28 +235,28 @@ input {
   color: rgba(255, 255, 255, 0.8);
   text-shadow: rgba(0, 0, 0, 0.5) 0 2px 1px;
 }
-/* line 115, ../sass/_picker.scss */
+/* line 131, ../sass/_picker.scss */
 input:focus {
   outline: none;
   color: #fff;
 }
 
-/* line 118, ../sass/_picker.scss */
+/* line 134, ../sass/_picker.scss */
 #hex {
-  width: 4.8em;
+  width: 5.7em;
 }
 
-/* line 119, ../sass/_picker.scss */
+/* line 135, ../sass/_picker.scss */
 #rgba {
-  width: 13.2em;
-}
-
-/* line 120, ../sass/_picker.scss */
-#hsla {
   width: 14em;
 }
 
-/* line 122, ../sass/_picker.scss */
+/* line 136, ../sass/_picker.scss */
+#hsla {
+  width: 15em;
+}
+
+/* line 138, ../sass/_picker.scss */
 input.error {
   -webkit-box-shadow: rgba(255, 127, 127, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
   -moz-box-shadow: rgba(255, 127, 127, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
@@ -236,6 +276,13 @@ input.error {
 }
 
 /* line 8, ../sass/site.scss */
+* {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* line 10, ../sass/site.scss */
 html {
   text-align: center;
   -webkit-background-size: 80px 80px;
@@ -247,69 +294,181 @@ html {
   background-image: -moz-linear-gradient(left top, rgba(0, 0, 0, 0.1) 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0));
   background-image: -o-linear-gradient(left top, rgba(0, 0, 0, 0.1) 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0));
   background-image: linear-gradient(left top, rgba(0, 0, 0, 0.1) 25%, rgba(0, 0, 0, 0) 25%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0.1) 75%, rgba(0, 0, 0, 0) 75%, rgba(0, 0, 0, 0));
-  background-color: #555;
+  background-color: #2a2a2a;
 }
 
-/* line 14, ../sass/site.scss */
+/* line 16, ../sass/site.scss */
 body {
   background: none;
   padding: 0px 0px 40px;
   display: inline-block;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
-/* line 19, ../sass/site.scss */
-body:after {
-  content: " ";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  position: fixed;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: -3;
-}
-/* line 26, ../sass/site.scss */
-body > div, body > section, body > heading {
-  width: 580px;
+/* line 21, ../sass/site.scss */
+body > div, body > section, body > header {
+  width: 570px;
   margin: 0 auto;
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-/* line 33, ../sass/site.scss */
+/* line 28, ../sass/site.scss */
 .heading-font, h1, h2, h3 {
   font-family: 'AdelleBasic', sans;
   font-weight: normal;
 }
 
-/* line 37, ../sass/site.scss */
-.inset-box-shadow, #why.hello {
+/* line 32, ../sass/site.scss */
+.inset-box-shadow, pre, section {
   -webkit-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
   -moz-box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
   box-shadow: rgba(255, 255, 255, 0.1) 0 1px 0, rgba(0, 0, 0, 0.8) 0 1px 7px 0px inset;
 }
 
-/* line 41, ../sass/site.scss */
+/* line 36, ../sass/site.scss */
 h1, h2, h3 {
   color: #eee;
   font-weight: normal;
 }
 
-/* line 47, ../sass/site.scss */
-a {
-  -webkit-transition: color, 0.5s;
-  -moz-transition: color, 0.5s;
-  -o-transition: color, 0.5s;
-  transition: color, 0.5s;
-  color: #eee;
-  text-decoration: none;
-  border-bottom: 1px dotted;
+/* line 42, ../sass/site.scss */
+h3 {
+  font-size: 1.6em;
+  margin: .8em 0 1em;
 }
 
-/* line 54, ../sass/site.scss */
-#why {
+/* line 45, ../sass/site.scss */
+h2 {
+  text-align: center;
+  font-size: 2em;
+  margin: .2em 0 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  padding-bottom: .6em;
+}
+/* line 51, ../sass/site.scss */
+h2 + p {
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 1.2em;
+}
+
+/* line 56, ../sass/site.scss */
+h1 {
+  text-align: center;
+  font-size: 3.5em;
+  margin: 0em 0 .1em;
+  line-height: 1em;
+  text-transform: uppercase;
+  word-spacing: .05em;
+  font-weight: bold;
+}
+/* line 65, ../sass/site.scss */
+h1:focus {
+  outline: 0;
+}
+
+/* line 69, ../sass/site.scss */
+header p:first-child {
+  font-style: normal;
+  text-transform: uppercase;
+  font-family: "CaviarDreams", sans;
+  display: block;
+  text-shadow: #000 1px 1px 0px;
+  color: #eee;
+  letter-spacing: .1em;
+  margin: 1em 0 .3em;
+  padding: 0;
+  font-size: 1.25em;
+}
+/* line 80, ../sass/site.scss */
+header p:first-child:before, header p:first-child:after {
+  content: ' ';
+  width: 4.5em;
+  height: 1px;
+  display: inline-block;
+  border-bottom: 1px solid #888;
+  position: relative;
+  top: -0.35em;
+  margin: 0 .5em;
+}
+/* line 91, ../sass/site.scss */
+header p {
+  font-size: .7em;
+  text-shadow: #000 0 1px;
+  font-family: "Caviar Dreams", sans;
+  font-style: normal;
+  display: block;
+  margin: 0em 0 1.2em;
+  color: #aaa;
+  text-transform: uppercase;
+  font-weight: normal;
+  letter-spacing: .5em;
+}
+/* line 103, ../sass/site.scss */
+header a {
+  border-bottom: 0;
+}
+
+/* line 108, ../sass/site.scss */
+a {
+  -webkit-transition: color 0.5s;
+  -moz-transition: color 0.5s;
+  -o-transition: color 0.5s;
+  transition: color 0.5s;
+  color: #eee;
+  text-decoration: none;
+}
+
+/* line 114, ../sass/site.scss */
+p {
+  margin: 0;
+  padding: 0 0 1.5em;
+  line-height: 1.5em;
+}
+
+/* line 120, ../sass/site.scss */
+#hslpicker {
+  margin: 1em 0 2em;
+}
+
+/* line 124, ../sass/site.scss */
+code {
+  font-size: 0.95em;
+  font-family: menlo, monaco, 'andale mono', 'courier new', fixed;
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0 .4em;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+
+/* line 132, ../sass/site.scss */
+pre {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 1em;
+  margin: 0 0 1.8em;
+  width: auto;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+}
+/* line 139, ../sass/site.scss */
+pre code {
+  background: none;
+}
+
+/* line 141, ../sass/site.scss */
+.hide {
+  display: none;
+}
+
+/* line 143, ../sass/site.scss */
+section {
   color: #c6c6c6;
   font-size: .9em;
   line-height: 1.45em;
@@ -317,32 +476,6 @@ a {
   padding-top: 1em;
   text-align: left;
   overflow: hidden;
-}
-/* line 63, ../sass/site.scss */
-#why pre, #why h2, #why h3, #why p {
-  display: none;
-}
-/* line 64, ../sass/site.scss */
-#why p {
-  font-family: "Lucida sans", Helvetica, Arial, sans;
-}
-/* line 65, ../sass/site.scss */
-#why strong {
-  color: #ccc;
-}
-/* line 66, ../sass/site.scss */
-#why a.why {
-  color: #444;
-  text-shadow: #000 0 0 2px;
-  text-transform: lowercase;
-  display: block;
-  width: 3.5em;
-  margin: 0 auto;
-  text-align: center;
-  display: none;
-}
-/* line 77, ../sass/site.scss */
-#why.hello {
   margin-top: 2em;
   -webkit-border-radius: 4px;
   -moz-border-radius: 4px;
@@ -352,36 +485,55 @@ a {
   padding: 2em 2.5em .5em;
   background: rgba(0, 0, 0, 0.2);
 }
-/* line 84, ../sass/site.scss */
-#why.hello h2, #why.hello h3 {
+/* line 152, ../sass/site.scss */
+section p {
+  font-family: "Lucida sans", Helvetica, Arial, sans;
+}
+/* line 153, ../sass/site.scss */
+section strong {
+  color: #ccc;
+}
+/* line 154, ../sass/site.scss */
+section a.why {
+  color: #444;
+  text-shadow: #000 0 0 2px;
+  text-transform: lowercase;
+  display: block;
+  width: 3.5em;
+  margin: 0 auto;
+  text-align: center;
+  display: none;
+}
+/* line 171, ../sass/site.scss */
+section h2, section h3 {
   text-shadow: rgba(0, 0, 0, 0.7) 0 2px 2px;
 }
-/* line 85, ../sass/site.scss */
-#why.hello pre, #why.hello h2, #why.hello h3, #why.hello p {
-  display: block;
-}
 
-/* line 89, ../sass/site.scss */
-#footer {
+/* line 174, ../sass/site.scss */
+footer {
   color: #555;
   text-shadow: rgba(0, 0, 0, 0.5) 0 1px 1px;
-  margin-top: 1.3em;
-  font-size: .85em;
+  font-size: 13px;
 }
-/* line 94, ../sass/site.scss */
-#footer a {
+/* line 178, ../sass/site.scss */
+footer p {
+  padding-bottom: .5em;
+}
+/* line 179, ../sass/site.scss */
+footer a {
   display: inline-block;
   color: #666;
   line-height: 1.1em;
   border-color: #555;
-}
-/* line 99, ../sass/site.scss */
-#footer a + a {
-  margin-left: 1em;
   position: relative;
+  margin-left: .2em;
 }
-/* line 102, ../sass/site.scss */
-#footer a + a:before {
+/* line 186, ../sass/site.scss */
+footer a + a {
+  margin-left: 1em;
+}
+/* line 188, ../sass/site.scss */
+footer a + a:before {
   content: " ";
   display: block;
   position: absolute;
@@ -393,4 +545,35 @@ a {
   box-shadow: rgba(255, 255, 255, 0.08) 1px 0 inset;
   width: 1px;
   height: 1.3em;
+}
+
+/* line 200, ../sass/site.scss */
+#url {
+  display: inline-block;
+  padding: 0 8px 2px;
+  text-shadow: inherit;
+  text-align: center;
+  line-height: 2em;
+  cursor: text;
+  margin: 0;
+  border: 0;
+  width: 168px;
+  color: #666;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  -ms-border-radius: 0px;
+  -o-border-radius: 0px;
+  border-radius: 0px;
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background: none;
+}
+/* line 214, ../sass/site.scss */
+#url:focus, #url:hover {
+  background: rgba(0, 0, 0, 0.05);
+  -webkit-box-shadow: rgba(0, 0, 0, 0.4) 0 1px 10px 0px inset;
+  -moz-box-shadow: rgba(0, 0, 0, 0.4) 0 1px 10px 0px inset;
+  box-shadow: rgba(0, 0, 0, 0.4) 0 1px 10px 0px inset;
+  color: #999;
 }

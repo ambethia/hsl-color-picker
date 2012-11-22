@@ -5,26 +5,21 @@
 @include font-face("AdelleBasic", font-files("adellebasic_bold-webfont.ttf", "adellebasic_bold-webfont.svg", "adellebasic_bold-webfont.woff", "adellebasic_bold-webfont.eot"));
 @include font-face("CaviarDreams", font-files("caviardreams-webfont.ttf", "caviardreams-webfont.svg", "caviardreams-webfont.woff", "caviardreams-webfont.eot"));
 
+* { @include box-sizing(border-box) }
+
 html { 
   text-align: center;
   @include background-size(80px 80px);
   @include background-image(linear-gradient(left top, rgba(#000, .1) 25%, rgba(#000, 0) 25%, rgba(#000, 0) 50%, rgba(#000, .1) 50%, rgba(#000, .1) 75%, rgba(#000, 0) 75%, rgba(#000, 0)));
-  background-color: #555;
+  background-color: #2a2a2a;
 }
 body {
   background: none;
   padding: 0px 0px 40px;
   display: inline-block;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  &:after {
-    content: " ";
-    @include stretch;
-    position: fixed;
-    background: rgba(#000, .5);
-    z-index: -3;
-  }
-  > div, > section, > heading {
-    width: 580px;
+  > div, > section, > header {
+    width: 570px;
     margin: 0 auto;
     @include box-sizing(border-box);
   }
@@ -44,14 +39,108 @@ h1, h2, h3 {
   font-weight: normal;
 }
 
-a {
-  @include transition(color, .5s);
-  color: #eee;
-  text-decoration: none;
-  border-bottom: 1px dotted;
+h3 {
+  font-size: 1.6em;
+  margin: .8em 0 1em; }
+h2 {
+  text-align: center;
+  font-size: 2em;
+  margin: .2em 0 0;
+  border-bottom: 1px solid rgba(#000, .3);
+  padding-bottom: .6em;
+  & + p {
+    border-top: 1px solid rgba(#fff, .05);
+    padding-top: 1.2em;
+  }
+}
+h1 {
+  text-align: center;
+  font-size: 3.5em;
+  margin: 0em 0 .1em;
+  line-height: 1em;
+  @extend .heading-font;
+  text-transform: uppercase;
+  word-spacing: .05em;
+  font-weight: bold;
+  &:focus { outline: 0; }
 }
 
-#why {
+header {
+  p:first-child {
+    font-style: normal;
+    text-transform: uppercase;
+    font-family: "CaviarDreams", sans;
+    display: block;
+    text-shadow: #000 1px 1px 0px;
+    color: #eee;
+    letter-spacing: .1em;
+    margin: 1em 0 .3em;
+    padding: 0;
+    font-size: 1.25em;
+    &:before, &:after {
+      content: ' ';
+      width: 4.5em;
+      height: 1px;
+      display: inline-block;
+      border-bottom: 1px solid #888;
+      position: relative;
+      top: -.35em;
+      margin: 0 .5em;
+    }
+  }
+  p {
+    font-size: .7em;
+    text-shadow: #000 0 1px;
+    font-family: "Caviar Dreams", sans;
+    font-style: normal;
+    display: block;
+    margin: 0em 0 1.2em;
+    color: #aaa;
+    text-transform: uppercase;
+    font-weight: normal;
+    letter-spacing: .5em;
+  }
+  a {
+    border-bottom: 0;
+  }
+}
+
+a {
+  @include transition(color .5s);
+  color: #eee;
+  text-decoration: none;
+  //border-bottom: 1px dotted;
+}
+p {
+  margin: 0;
+  padding: 0 0 1.5em;
+  line-height: 1.5em;
+}
+
+#hslpicker {
+  margin: 1em 0 2em;
+}
+
+code {
+  font-size: 0.95em;
+  font-family: menlo, monaco, 'andale mono', 'courier new', fixed;
+  display: inline-block;
+  background: rgba(#000, .3);
+  padding: 0 .4em;
+  @include border-radius(4px);
+}
+pre {
+  background: rgba(#000, .3);
+  padding: 1em;
+  margin: 0 0 1.8em;
+  width: auto;
+  @include border-radius(4px);
+  @extend .inset-box-shadow;
+  code { background: none; }
+}
+.hide { display: none; }
+
+section {
   color: #c6c6c6;
   font-size: .9em;
   line-height: 1.45em;
@@ -60,7 +149,6 @@ a {
   text-align: left;
   overflow: hidden;
 
-  pre,h2,h3,p { display: none; }
   p { font-family: "Lucida sans", Helvetica, Arial, sans; }
   strong { color: #ccc; }
   a.why {
@@ -74,31 +162,29 @@ a {
     display: none;
   }
 
-  &.hello {
-    margin-top: 2em;
-    @include border-radius(4px);
-    @extend .inset-box-shadow;
-    padding: 2em 2.5em .5em;
-    background: rgba(#000, .2);
+  margin-top: 2em;
+  @include border-radius(4px);
+  @extend .inset-box-shadow;
+  padding: 2em 2.5em .5em;
+  background: rgba(#000, .2);
 
-    h2,h3 { text-shadow: rgba(#000, .7) 0 2px 2px; }
-    pre,h2,h3,p { display: block; }
-  }
+  h2,h3 { text-shadow: rgba(#000, .7) 0 2px 2px; }
 }
   
-#footer {
+footer {
   color: #555;
   text-shadow: rgba(#000, .5) 0 1px 1px;
-  margin-top: 1.3em;
-  font-size: .85em;
+  font-size: 13px;
+  p { padding-bottom: .5em; }
   a {
     display: inline-block;
     color: #666;
     line-height: 1.1em;
     border-color: #555;
-    & + a {
+    position: relative;
+    margin-left: .2em;
+    + a { 
       margin-left: 1em;
-      position: relative;
       &:before {
         content: " ";
         display: block;
@@ -108,5 +194,26 @@ a {
         width: 1px; height: 1.3em;
       }
     }
+  }
+}
+
+#url {
+  display: inline-block;
+  padding: 0 8px 2px;
+  text-shadow: inherit;
+  text-align: center;
+  line-height: 2em;
+  cursor: text;
+  margin: 0;
+  border: 0;
+  width: 168px;
+  color: #666;
+  @include border-radius(0px);
+  @include box-shadow(none);
+  background: none;
+  &:focus, &:hover {
+    background: rgba(#000, .05);
+    @include box-shadow(rgba(#000, .4) 0 1px 10px 0px inset);
+    color: #999;
   }
 }

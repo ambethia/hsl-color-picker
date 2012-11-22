@@ -12,11 +12,18 @@
       model: color,
       el: '#hslpicker'
     });
-    return window.picker = new window.hsl.Picker({
+    window.picker = new window.hsl.Picker({
       model: color,
       el: '#controls',
       hex: hexHash()
     }).render();
+    $('#url').on('click', function(e) {
+      return e.target.select();
+    });
+    return $('.show-more').on('click', function(e) {
+      $('#more').toggleClass('hide');
+      return e.preventDefault();
+    });
   });
 
   window.hsl.Inputs = $.View.extend({
@@ -34,7 +41,7 @@
       'keydown #controls input': 'bumpHsl',
       'keyup #controls input': 'editHsl',
       'keyup #colors input': 'changeColor',
-      'click #color': 'toggleTileBg'
+      'click #color': 'cycleTileBg'
     },
     changeColor: function(e) {
       var el;
@@ -100,7 +107,7 @@
         'background-color': this.model.hslaStr()
       });
     },
-    toggleTileBg: function() {
+    cycleTileBg: function() {
       var el;
       el = $('.frame');
       if (el.hasClass('alt-1')) {
@@ -112,8 +119,10 @@
       }
     },
     changeHex: function() {
+      var url;
       this.update($('#hex'), this.model.get('hex'));
-      return this.update($('#url'), 'http://hslpicker.com' + this.model.get('hex'));
+      url = "" + window.location.host + "/" + (this.model.get('hex'));
+      return $('#url').val(url);
     },
     changeRgb: function() {
       return this.update($('#rgba'), this.model.rgbaStr());

@@ -2,12 +2,15 @@ window.hsl = {}
 
 $(document).ready ->
 
-
   window.color = color  = new window.hsl.Color()
   hexHash = ->
     color.isHex(window.location.hash)
   inputs = new window.hsl.Inputs(model: color, el: '#hslpicker')
   window.picker = new window.hsl.Picker(model: color, el: '#controls', hex: hexHash()).render()
+
+  $('#url').on 'click', (e)-> e.target.select()
+  $('.show-more').on 'click', (e)-> $('#more').toggleClass('hide'); e.preventDefault()
+
 
 window.hsl.Inputs = $.View.extend
 
@@ -25,7 +28,7 @@ window.hsl.Inputs = $.View.extend
     'keydown #controls input': 'bumpHsl'
     'keyup #controls input'  : 'editHsl'
     'keyup #colors input'    : 'changeColor'
-    'click #color'           : 'toggleTileBg'
+    'click #color'           : 'cycleTileBg'
 
   changeColor: (e) ->
     el = $(e.target)
@@ -66,7 +69,7 @@ window.hsl.Inputs = $.View.extend
   setTile: ->
     $('#color').css 'background-color': @model.hslaStr()
 
-  toggleTileBg: ->
+  cycleTileBg: ->
     el = $('.frame')
     if el.hasClass 'alt-1'
       el.removeClass('alt-1').addClass 'alt-2'
@@ -77,7 +80,8 @@ window.hsl.Inputs = $.View.extend
 
   changeHex: ->
     @update $('#hex'), @model.get 'hex'
-    @update $('#url'), 'http://hslpicker.com' + @model.get 'hex'
+    url = "#{window.location.host}/#{@model.get('hex')}"
+    $('#url').val(url) 
 
   changeRgb: ->
     @update $('#rgba'), @model.rgbaStr()
