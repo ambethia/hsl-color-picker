@@ -463,7 +463,7 @@
       if (marker == null) {
         marker = true;
       }
-      match = (_ref = hex.match(/^(#)?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$/)) != null ? _ref.slice(2) : void 0;
+      match = (_ref = hex.match(/^#?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$/)) != null ? _ref.slice(1) : void 0;
       if (match == null) {
         return false;
       }
@@ -597,7 +597,7 @@
       return this.rgbToHsl(this.hexToRgb(hex));
     },
     rgbToHex: function(rgb) {
-      var c, hex;
+      var c, hex, i;
       if (typeof rgb === 'string') {
         rgb = this.isRgb(rgb);
       }
@@ -625,7 +625,21 @@
           }
           return _results;
         })();
-        return '#' + hex.join('').toUpperCase();
+        hex = hex.join('');
+        if ($._.compact((function() {
+          var _i, _len, _ref, _results;
+          _ref = hex.match(/.{1,2}/g);
+          _results = [];
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            i = _ref[_i];
+            _results.push(i[0] === i[1]);
+          }
+          return _results;
+        })()).length === 3) {
+          return "#" + hex[0] + hex[2] + hex[4];
+        } else {
+          return "#" + hex;
+        }
       }
     },
     rgbToHsl: function(rgb) {

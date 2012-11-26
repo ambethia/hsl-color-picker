@@ -323,7 +323,7 @@ window.hsl.Color = $.Model.extend
       @.get 'hex'
 
   isHex: (hex, marker = true) -> 
-    match = hex.match(/^(#)?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$/)?.slice(2)
+    match = hex.match(/^#?([0-9a-fA-F]{3})([0-9a-fA-F]{3})?$/)?.slice(1)
     return false unless match?
 
     color = $._.compact(match).join('')
@@ -390,7 +390,11 @@ window.hsl.Color = $.Model.extend
       hex = (parseFloat(c).toString(16) for c in rgb.slice(0,3))
       hex = for c in hex
         if c.length is 1 then "0#{c}" else c
-      '#'+hex.join('').toUpperCase()
+      hex = hex.join('')
+      if $._.compact((i[0] is i[1] for i in hex.match(/.{1,2}/g))).length is 3
+        "##{hex[0]}#{hex[2]}#{hex[4]}"
+      else
+        "##{hex}"
 
   rgbToHsl: (rgb) ->
     rgb = @isRgb rgb if typeof rgb is 'string'
