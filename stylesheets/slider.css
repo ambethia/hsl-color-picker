@@ -97,7 +97,7 @@ heading a { border-bottom: 0; }
 #hsl_picker .slider > div + input { position: absolute; right: 0px; width: 30px; top: 4px; font-size: .9em; padding: 3px 6px; }
 
 #colors { padding: 42px 0px 10px; clear: both; position: relative; z-index: 0; }
-#colors input { width: 32.2%; display: inline-block; text-align: center; }
+#colors input { width: 23.9%; display: inline-block; text-align: center; }
 #colors input + input { margin-left: 5px; }
 
 .csstransforms3d #colors { -webkit-animation: slide-in .8s ease-out; }

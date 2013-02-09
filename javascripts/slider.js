@@ -27,6 +27,7 @@ FS.HSLSlider = new Class({
     this.hexInput = $('hex').addEvent('keyup', this.changeHex.bind(this));
     this.rgbInput = $('rgb').addEvent('keyup', this.changeRgb.bind(this));
     this.hslInput = $('hsl').addEvent('keyup', this.changeHsl.bind(this));
+    this.nfpInput = $('nfp').addEvent('keyup', this.changeNfp.bind(this));
     this.hslPicker = $('hsl_picker').addEvent('keyup', this.enterVal.bind(this));
     this.setColorValues();
   },
@@ -69,12 +70,18 @@ FS.HSLSlider = new Class({
     this.setColorValues();
   },
 
+  setNfp: function(nfp){
+    this.color = new FS.Color(nfp, 'nfp');
+    this.setColorValues();
+  },
+
   setColorValues: function(){
 
     //set bottom row values
     if (this.rgbInput.value != this.color.rgb()) this.rgbInput.set('value', this.color.rgb()).removeClass('error');
     if (this.hslInput.value != this.color.hsl()) this.hslInput.set('value', this.color.hsl()).removeClass('error');
     if (this.hexInput.value != this.color.hex()) this.hexInput.set('value', this.color.hex()).removeClass('error');
+    if (this.nfpInput.value != this.color.nfp()) this.nfpInput.set('value', this.color.nfp()).removeClass('error');
 
     //Set slider values
     var h = $('h'); var s = $('s'); var l = $('l');
@@ -236,6 +243,16 @@ FS.HSLSlider = new Class({
     }
   },
 
+  changeNfp: function(event){
+    nfp = this.nfpInput.value
+    this.nfpInput.removeClass('error');
+    if(this.color.validNfp(nfp) && nfp != this.color.nfp()){
+      this.setNfp(nfp);
+    }else if(!this.color.validNfp(nfp)) {
+      this.nfpInput.addClass('error');
+    }
+  },
+
   compare: function(color1, color2){
     c1 = new FS.Color(color1).hsl(true);//this.hexToHsl(this.valid(color2, 'hex'));
     c2 = new FS.Color(color2).hsl(true);
@@ -361,6 +378,8 @@ FS.Color = new Class({
       this.setHsl(color);
     } else if (type == 'rgb' && this.validRgb(color)) {
       this.setRgb(color);
+    } else if (type == 'nfp' && this.validNfp(color)) {
+      this.setNfp(color);
     } else if (typeof(color) == 'string') {
       if (this.validHex(color)) {
         this.setHex(color);
@@ -368,6 +387,8 @@ FS.Color = new Class({
         this.setRgb(color);
       } else if (this.validHsl(color)) {
         this.setHsl(color);
+      } else if (this.validNfp(color)) {
+        this.setNfp(color);
       }
     }
   },
@@ -376,18 +397,28 @@ FS.Color = new Class({
     this._hsl = this.toHsl(color);
     this._rgb = this.hslToRgb(this._hsl);
     this._hex = this.rgbToHex(this._rgb);
+    this._nfp = this.rgbToNfp(this._rgb);
   },
 
   setRgb: function(color) {
     this._rgb = this.toRgb(color);
     this._hsl = this.rgbToHsl(this._rgb);
     this._hex = this.rgbToHex(this._rgb);
+    this._nfp = this.rgbToNfp(this._rgb);
   },
 
   setHex: function(color) {
     this._hex = this.toHex(color);
     this._rgb = this.hexToRgb(this._hex);
     this._hsl = this.rgbToHsl(this._rgb);
+    this._nfp = this.rgbToNfp(this._rgb);
+  },
+
+  setNfp: function(color) {
+    this._nfp = this.toNfp(color);
+    this._rgb = this.nfpToRgb(this._nfp);
+    this._hsl = this.rgbToHsl(this._rgb);
+    this._hex = this.rgbToHex(this._rgb);
   },
 
   adjustLum: function(l, color){
@@ -407,12 +438,20 @@ FS.Color = new Class({
     return (notStr) ? this._hsl : this.hslStr(this._hsl);
   },
 
+  nfp: function(notStr) {
+    return (notStr) ? this._nfp : this.nfpStr(this._nfp);
+  },
+
   rgbStr: function(rgb) {
     return "rgb(" + rgb.join(", ") + ")";
   },
 
   hslStr: function(hsl) {
     return "hsl("+ hsl[0] +", "+ hsl[1] +"%, "+ hsl[2] +"%)";
+  },
+
+  nfpStr: function(nfp) {
+    return nfp.map(function(item, index) { return item.toFixed(2); }).join(", ");
   },
 
   hue: function(){
@@ -453,6 +492,11 @@ FS.Color = new Class({
     return color.every(function(item, index){ return (index == 0 && item >= 0 && item <= 360) || (index > 0 && item >= 0 && item <= 100) });
   },
 
+  validNfp: function (color) {
+    color = (typeof(color) == 'array') ? color : this.toNfp(color);
+    return color.every(function(item, index){ return (item >= 0) && (item <= 1) })
+  },
+
   toRgb: function(rgb){
     if (typeof(rgb) == 'string')
       return rgb.replace(/rgb\(/, '').replace(/\)/, '').replace(/;/, '').clean().split(',').map(function(item, index) { return parseFloat(item); });
@@ -469,6 +513,13 @@ FS.Color = new Class({
 
   toHex: function(hex){
     return hex.replace(/\#/, '').clean();
+  },
+
+  toNfp: function(nfp){
+    if (typeof(nfp) == 'string')
+      return nfp.replace(/nfp\(/, '').replace(/\)/, '').replace(/;/, '').clean().split(',').map(function(item, index) { return parseFloat(item); });
+    else
+      return nfp;
   },
 
   hslToHex: function(hsl) {
@@ -561,5 +612,21 @@ FS.Color = new Class({
     l = (l*100).round();
 
     return [h, s, l];
+  },
+
+  nfpToRgb: function(nfp) {
+    var r = (parseFloat(nfp[0]) * 255).round();
+    var g = (parseFloat(nfp[1]) * 255).round();
+    var b = (parseFloat(nfp[2]) * 255).round();
+
+    return [r, g, b];
+  },
+
+  rgbToNfp: function(rgb) {
+    var r = parseFloat(rgb[0]) / 255;
+    var g = parseFloat(rgb[1]) / 255;
+    var b = parseFloat(rgb[2]) / 255;
+
+    return [r, g, b];
   }
 });
